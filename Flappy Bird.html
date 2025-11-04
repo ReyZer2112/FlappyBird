@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8"/>
+<title>Flappy Bird</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background: #000;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+  iframe { border: none; width: 100vw; height: 100vh; }
+
+  /* Loading */
+  .loading {
+    position: fixed;
+    top:0; left:0; width:100%; height:100%;
+    background: radial-gradient(circle at center, #222 0%, #000 100%);
+    color: #fff;
+    display:flex; justify-content:center; align-items:center;
+    font-size:20px; z-index:5;
+  }
+
+  @keyframes fadeOut { to { opacity:0; visibility:hidden; } }
+
+  /* Hamburger */
+  .hamburger {
+    position: fixed; top:20px; right:20px;
+    width:35px; height:30px; display:flex;
+    flex-direction:column; justify-content:space-between;
+    cursor:pointer; z-index:10;
+  }
+  .hamburger div { width:100%; height:5px; background:#fff; border-radius:5px; transition: all 0.3s ease; }
+
+  /* Menu */
+  .menu {
+    position: fixed; top:0; right:-320px; width:320px; height:100%;
+    background:#111; color:#fff; padding:60px 20px;
+    box-sizing:border-box; transition:right 0.5s ease;
+    z-index:9; display:flex; flex-direction:column; gap:25px;
+    overflow-y:auto; -webkit-overflow-scrolling: touch;
+  }
+  .menu.active { right:0; }
+  .menu h2 { margin:0 0 10px 0; font-size:20px; border-bottom:1px solid #555; padding-bottom:5px; }
+  .menu button { padding:10px; border:none; background:#333; color:#fff; cursor:pointer; border-radius:5px; transition:0.2s; }
+  .menu button:hover { background:#555; }
+
+  /* Social block */
+  .follow-us, .volume-control {
+    text-align:center; background:linear-gradient(135deg,#1f1f1f,#2c2c2c);
+    color:#fff; padding:20px; border-radius:15px; max-width:450px;
+    margin:20px auto; box-shadow:0 0 15px rgba(0,0,0,0.5); font-family:Arial,sans-serif;
+  }
+  .follow-us h2, .volume-control h2 {
+    font-size:22px; margin-bottom:10px; border-bottom:1px solid #555; padding-bottom:5px;
+  }
+  .social-icons, .volume-buttons { display:flex; justify-content:center; flex-wrap:wrap; gap:15px; }
+  .social-icons a img, .volume-buttons button { width:45px; height:45px; transition:0.3s; }
+  .social-icons a:hover img { transform:scale(1.2); filter:brightness(1.3); cursor:pointer; }
+  .volume-buttons button { padding:10px 15px; border-radius:8px; background:#333; color:#fff; cursor:pointer; transition:all 0.3s; }
+  .volume-buttons button:hover { background:#555; transform:scale(1.1); }
+</style>
+</head>
+<body>
+
+<!-- Hamburger -->
+<div class="hamburger" id="hamburger">
+  <div></div><div></div><div></div>
+</div>
+
+<!-- Menu -->
+<div class="menu" id="menu">
+  <h2>O‘yin haqida</h2>
+  <p>
+    🐦 <strong>Qushni boshqarish:</strong> Ekranga teginish orqali qushni nazorat qiling.<br>
+    🌵 <strong>To‘siqlardan qochish:</strong> Har bir vertikal truba sinov.<br>
+    🏆 <strong>Eng yuqori ball:</strong> Har bir muvaffaqiyat balingizni oshiradi.<br>
+    🎨 <strong>Retro grafika:</strong> Oddiy, ammo ko‘zni quvontiradi.<br>
+    ⚡ <strong>Instant feedback:</strong> Har bir xato yoki muvaffaqiyat darhol seziladi.<br>
+  </p>
+
+  <!-- Social -->
+  <div class="follow-us">
+    <h2>📢 Bizni kuzatib boring</h2>
+    <div class="social-icons">
+      <a href="https://instagram.com/reyzer2112" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png"></a>
+      <a href="https://www.youtube.com/@ReyZer-2112" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png"></a>
+      <a href="https://www.snapchat.com/add/reyzer2112" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111703.png"></a>
+      <a href="https://www.roblox.com/users/4669071068/profile" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/743/743927.png"></a>
+      <a href="https://t.me/ReyZer2112" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png"></a>
+      <a href="http://discord.gg/reyzer2112" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png"></a>
+    </div>
+  </div>
+
+  <!-- Volume -->
+  <div class="volume-control">
+   <h2>🔊 Ovoz boshqaruvi (<span style="color:red;">Tez kunda</span>)</h2>
+    <div class="volume-buttons">
+      <button onclick="changeVolume(1)">🔊 </button>
+      <button onclick="changeVolume(0.5)">🔉 </button>
+      <button onclick="changeVolume(0)">🔇 </button>
+    </div>
+  </div>
+</div>
+
+<!-- Flappy Bird -->
+<iframe src="https://flappybird.io/" id="flappy" allowfullscreen></iframe>
+
+<!-- Loading -->
+<div class="loading" id="loading">O‘yin yuklanmoqda...</div>
+
+<!-- Audio -->
+<audio id="bgAudio" loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const hamburger = document.getElementById('hamburger');
+const menu = document.getElementById('menu');
+const lines = hamburger.querySelectorAll('div');
+const audio = document.getElementById('bgAudio');
+let audioStarted = false;
+
+// Hamburger
+hamburger.addEventListener('click', ()=>{
+  menu.classList.toggle('active');
+  hamburger.classList.toggle('open');
+  if(hamburger.classList.contains('open')){
+    lines[0].style.transform="rotate(45deg) translate(5px,5px)";
+    lines[1].style.opacity="0";
+    lines[2].style.transform="rotate(-45deg) translate(7px,-6px)";
+  } else {
+    lines[0].style.transform="rotate(0) translate(0,0)";
+    lines[1].style.opacity="1";
+    lines[2].style.transform="rotate(0) translate(0,0)";
+  }
+});
+
+// Change volume
+function changeVolume(target){
+  if(!audioStarted){ audio.play().catch(()=>{}); audioStarted=true; }
+  const step=0.01; let vol=audio.volume;
+  const interval=setInterval(()=>{
+    if(Math.abs(vol-target)<step){ audio.volume=target; clearInterval(interval); }
+    else if(vol<target){ vol+=step; audio.volume=Math.min(vol,1); }
+    else { vol-=step; audio.volume=Math.max(vol,0); }
+  },20);
+}
+
+// Iframe load event
+const iframe=document.getElementById('flappy');
+iframe.onload=function(){
+  document.getElementById('loading').style.display='none';
+}
+</script>
+
+</body>
+</html>
