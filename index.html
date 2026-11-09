@@ -247,11 +247,11 @@
             src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram"></a>
         <a href="https://www.youtube.com/@ReyZer2112" target="_blank" rel="noopener noreferrer"><img
             src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube"></a>
-        <a href="https://www.roblox.com/" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.roblox.com/users/11746345524/profile" target="_blank" rel="noopener noreferrer">
           <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Roblox%20(2025)%20(App%20Icon).svg"
-               alt="Roblox">
+            alt="Roblox">
         </a>
-        <a href="https://www.snapchat.com/" target="_blank" rel="noopener noreferrer"><img
+        <a href="https://www.snapchat.com/@reyzer2112" target="_blank" rel="noopener noreferrer"><img
             src="https://cdn-icons-png.flaticon.com/512/3670/3670166.png" alt="Snapchat"></a>
         <a href="https://discord.gg/reyzer2112" target="_blank" rel="noopener noreferrer"><img
             src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord"></a>
@@ -301,12 +301,12 @@
 
     // Change volume
     function changeVolume(target) {
-      if (!audioStarted) { audio.play().catch(() => { }); audioStarted = true; }
+      if (!audioStarted) {audio.play().catch(() => { }); audioStarted = true;}
       const step = 0.01; let vol = audio.volume;
       const interval = setInterval(() => {
-        if (Math.abs(vol - target) < step) { audio.volume = target; clearInterval(interval); }
-        else if (vol < target) { vol += step; audio.volume = Math.min(vol, 1); }
-        else { vol -= step; audio.volume = Math.max(vol, 0); }
+        if (Math.abs(vol - target) < step) {audio.volume = target; clearInterval(interval);}
+        else if (vol < target) {vol += step; audio.volume = Math.min(vol, 1);}
+        else {vol -= step; audio.volume = Math.max(vol, 0);}
       }, 20);
     }
 
